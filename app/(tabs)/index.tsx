@@ -11,7 +11,7 @@ export default function HomeScreen() {
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
+          source={require('@/assets/images/friends.png')}
           style={styles.reactLogo}
         />
       }>
@@ -20,9 +20,9 @@ export default function HomeScreen() {
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Why us?</ThemedText>
+        <ThemedText type="subtitle">0 Jobs?</ThemedText>
         <ThemedText>
-          Last semester I met one of my closest friends and the issue we had was running out of people to do side quests with.
+          Last semester I met one of my closest friends Pau and the issue we had was running out of people to do side quests with.
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
@@ -34,7 +34,7 @@ export default function HomeScreen() {
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Click Explore 2 Learn More</ThemedText>
+        <ThemedText type="subtitle">2 Learn More</ThemedText>
         <ThemedText>
           When you're ready, click Explore to get your life started.
         </ThemedText>
