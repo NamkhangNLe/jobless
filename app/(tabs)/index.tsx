@@ -12,7 +12,7 @@ export default function HomeScreen() {
       headerImage={
         <Image
           source={require('@/assets/images/friends.png')}
-          style={styles.reactLogo}
+          style={styles.friendsLogo}
         />
       }>
       <ThemedView style={styles.titleContainer}>
@@ -21,7 +21,7 @@ export default function HomeScreen() {
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">0 Jobs?</ThemedText>
-        <ThemedText>
+        <ThemedText style={{ textAlign: 'justify' }}>
           Last semester I met one of my closest friends Pau and the issue we had was running out of people to do side quests with.
         </ThemedText>
       </ThemedView>
@@ -53,9 +53,9 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
+  friendsLogo: {
+    height: '100%',
+    width: '100%',
     bottom: 0,
     left: 0,
     position: 'absolute',
