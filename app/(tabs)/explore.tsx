@@ -1,21 +1,24 @@
-import { StyleSheet, Image, Platform } from 'react-native';
-
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+import Collapsible from '@/components/Collapsible';
 
-export default function TabTwoScreen() {
+export default function ExploreScreen() {
+  const navigation = useNavigation();
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
       headerImage={
-        <Image
-          source={require('@/assets/images/friends.png')}
+        <MaterialCommunityIcons
+          name="bee"
+          size={100}
+          color="black"
           style={styles.friendsLogo}
-          />
+        />
       }>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Profile</ThemedText>
@@ -41,15 +44,6 @@ export default function TabTwoScreen() {
           Well you've come to the right place.
         </ThemedText>
       </Collapsible>
-      <Collapsible title="Food">
-        <ThemedText>
-          Looking to find people to be{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            big back
-          </ThemedText>
-          {' '}with? Well you've come to the right place.
-        </ThemedText>
-      </Collapsible>
       <Collapsible title="Studying">
         <ThemedText>
           Looking to find people to lock in at the{' '}
@@ -57,26 +51,36 @@ export default function TabTwoScreen() {
           Well you've come to the right place.
         </ThemedText>
       </Collapsible>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('adventure')}
+      >
+        <Text style={styles.buttonText}>Begin Adventure</Text>
+      </TouchableOpacity>
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
   friendsLogo: {
     height: '100%',
     width: '100%',
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  titleContainer: {
+    marginBottom: 8,
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    margin: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
