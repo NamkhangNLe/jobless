@@ -7,6 +7,9 @@ export interface Subscription {
 export async function getFriendsSubscribedToUser(userId: string): Promise<string[]> {
     try {
         const response = await fetch(`https://your-backend-api.com/subscriptions?userId=${userId}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch subscriptions');
+        }
         const data = await response.json();
         return data.map((subscription: Subscription) => subscription.friendId);
     } catch (error) {

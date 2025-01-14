@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { fetchNotifications } from '@/models/Notifications';
 
 interface Notification {
   id: string;
@@ -16,17 +17,16 @@ export default function NotificationsScreen() {
 
   useEffect(() => {
     // Fetch notifications from the backend
-    async function fetchNotifications() {
+    async function fetchNotificationsData() {
       try {
-        const response = await fetch('https://your-backend-api.com/notifications');
-        const data = await response.json();
+        const data = await fetchNotifications('currentUserId'); // Replace with actual user ID
         setNotifications(data);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       }
     }
 
-    fetchNotifications();
+    fetchNotificationsData();
   }, []);
 
   return (
