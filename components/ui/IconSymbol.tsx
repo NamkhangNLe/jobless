@@ -13,6 +13,7 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  'adventureIcon': 'send', // Replace 'YOUR_ICON_NAME' with the actual icon name
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
