@@ -23,61 +23,39 @@ export default function TabTwoScreen() {
       <ThemedText>A list of what activities you have subscribed to and people have subsribed to you for.</ThemedText>
       <Collapsible title="Volleyball">
         <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
+          Looking to find people to play with? Well you've come to the right place.
         </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
       </Collapsible>
       <Collapsible title="Grocery Shopping">
         <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
+          Looking to find people to get groceries with? Need someone with a{' '}
+          <ThemedText type="defaultSemiBold">Costco</ThemedText> card?
+          Well you've come to the right place.
         </ThemedText>
       </Collapsible>
       <Collapsible title="Exploring">
         <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
+          Looking to find people to explore Atlanta with?
+          Need someone to be{' '}
+          <ThemedText type="defaultSemiBold">jobless</ThemedText> with?
+          Well you've come to the right place.
         </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
       </Collapsible>
       <Collapsible title="Food">
         <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
+          Looking to find people to be{' '}
           <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
+            big back
           </ThemedText>
+          {' '}with? Well you've come to the right place.
         </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
       </Collapsible>
       <Collapsible title="Studying">
         <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-          library to create a waving hand animation.
+          Looking to find people to lock in at the{' '}
+          <ThemedText type="defaultSemiBold">library</ThemedText> with?
+          Well you've come to the right place.
         </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
       </Collapsible>
     </ParallaxScrollView>
   );
@@ -93,5 +71,12 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
+  },
+  friendsLogo: {
+    height: '100%',
+    width: '100%',
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
   },
 });
