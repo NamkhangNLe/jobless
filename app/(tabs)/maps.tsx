@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { Image, StyleSheet } from 'react-native';
+import MapView from 'react-native-maps';
 import * as Location from 'expo-location';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function MapsScreen() {
-  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [location, setLocation] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -43,15 +43,9 @@ export default function MapsScreen() {
             longitude: location.longitude,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
-          }}>
-          <Marker
-            coordinate={{
-              latitude: location.latitude,
-              longitude: location.longitude,
-            }}
-            title="You are here"
-          />
-        </MapView>
+          }}
+          showsUserLocation={true}
+        />
       )}
     </ParallaxScrollView>
   );
