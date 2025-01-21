@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Platform } from 'react-native';
+import { TouchableOpacity, StyleSheet, Image, Platform, Animated } from 'react-native';
 
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -21,42 +21,31 @@ export default function TabTwoScreen() {
         <ThemedText type="title">Profile</ThemedText>
       </ThemedView>
       <ThemedText>A list of what activities you have subscribed to and people have subsribed to you for.</ThemedText>
-      <Collapsible title="Volleyball">
-        <ThemedText>
-          Looking to find people to play with? Well you've come to the right place.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Grocery Shopping">
-        <ThemedText>
-          Looking to find people to get groceries with? Need someone with a{' '}
-          <ThemedText type="defaultSemiBold">Costco</ThemedText> card?
-          Well you've come to the right place.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Exploring">
-        <ThemedText>
-          Looking to find people to explore Atlanta with?
-          Need someone to be{' '}
-          <ThemedText type="defaultSemiBold">jobless</ThemedText> with?
-          Well you've come to the right place.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Food">
-        <ThemedText>
-          Looking to find people to be{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            big back
-          </ThemedText>
-          {' '}with? Well you've come to the right place.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Studying">
-        <ThemedText>
-          Looking to find people to lock in at the{' '}
-          <ThemedText type="defaultSemiBold">library</ThemedText> with?
-          Well you've come to the right place.
-        </ThemedText>
-      </Collapsible>
+      <TouchableOpacity onPress={() => console.log('Volleyball button pressed')}>
+        <Animated.View style={styles.animatedButton}>
+            <ThemedText type="defaultSemiBold">Volleyball</ThemedText>
+        </Animated.View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => console.log('Grocery Shopping button pressed')}>
+        <Animated.View style={styles.animatedButton}>
+            <ThemedText type="defaultSemiBold">Grocery Shopping</ThemedText>
+        </Animated.View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => console.log('Exploring button pressed')}>
+        <Animated.View style={styles.animatedButton}>
+            <ThemedText type="defaultSemiBold">Exploring</ThemedText>
+        </Animated.View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => console.log('Food button pressed')}>
+        <Animated.View style={styles.animatedButton}>
+            <ThemedText type="defaultSemiBold">Food</ThemedText>
+        </Animated.View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => console.log('Studying button pressed')}>
+        <Animated.View style={styles.animatedButton}>
+            <ThemedText type="defaultSemiBold">Studying</ThemedText>
+        </Animated.View>
+      </TouchableOpacity>
     </ParallaxScrollView>
   );
 }
@@ -71,6 +60,12 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
+  },
+  animatedButton: {
+    backgroundColor: '#FF6347',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
   },
   friendsLogo: {
     height: '100%',
