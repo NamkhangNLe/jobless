@@ -46,7 +46,7 @@ export default function TabLayout() {
           title: 'Maps',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="map.fill" color={color} />,
         }}
-      />
+      />  
     </Tabs>
   );
 }
