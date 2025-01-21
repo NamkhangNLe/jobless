@@ -1,5 +1,5 @@
 import { TouchableOpacity, StyleSheet, Image, Platform, Animated } from 'react-native';
-
+import { Link, router } from "expo-router";
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -21,7 +21,7 @@ export default function TabTwoScreen() {
         <ThemedText type="title">Profile</ThemedText>
       </ThemedView>
       <ThemedText>A list of what activities you have subscribed to and people have subsribed to you for.</ThemedText>
-      <TouchableOpacity onPress={() => console.log('Volleyball button pressed')}>
+      <TouchableOpacity onPress={() => router.push("/navigation/volleyball")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Volleyball</ThemedText>
         </Animated.View>
