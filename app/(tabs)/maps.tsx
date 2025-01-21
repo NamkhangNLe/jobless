@@ -32,7 +32,7 @@ export default function MapsScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Side Quest</ThemedText>
+        <ThemedText type="title">Begin Side Quest</ThemedText>
       </ThemedView>
       {location && (
         <MapView
