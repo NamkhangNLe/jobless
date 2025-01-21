@@ -1,5 +1,5 @@
 import { TouchableOpacity, StyleSheet, Image, Platform, Animated } from 'react-native';
-
+import { Link, router } from "expo-router";
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -21,27 +21,27 @@ export default function TabTwoScreen() {
         <ThemedText type="title">Profile</ThemedText>
       </ThemedView>
       <ThemedText>A list of what activities you have subscribed to and people have subsribed to you for.</ThemedText>
-      <TouchableOpacity onPress={() => console.log('Volleyball button pressed')}>
+      <TouchableOpacity onPress={() => router.push("/navigation/volleyball")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Volleyball</ThemedText>
         </Animated.View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log('Grocery Shopping button pressed')}>
+      <TouchableOpacity onPress={() => router.push("/navigation/grocery-shopping")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Grocery Shopping</ThemedText>
         </Animated.View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log('Exploring button pressed')}>
+      <TouchableOpacity onPress={() => router.push("/navigation/exploring")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Exploring</ThemedText>
         </Animated.View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log('Food button pressed')}>
+      <TouchableOpacity onPress={() => router.push("/navigation/food")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Food</ThemedText>
         </Animated.View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log('Studying button pressed')}>
+      <TouchableOpacity onPress={() => router.push("/navigation/studying")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Studying</ThemedText>
         </Animated.View>
