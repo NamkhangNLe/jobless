@@ -7,7 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function MapsScreen() {
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState<Location.LocationObjectCoords | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -32,9 +32,8 @@ export default function MapsScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Friends</ThemedText>
+        <ThemedText type="title">Side Quest</ThemedText>
       </ThemedView>
-      <ThemedText>A list of what activities you have subscribed to and people have subscribed to you for.</ThemedText>
       {location && (
         <MapView
           style={styles.map}
@@ -47,6 +46,7 @@ export default function MapsScreen() {
           showsUserLocation={true}
         />
       )}
+        
     </ParallaxScrollView>
   );
 }
