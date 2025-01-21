@@ -26,22 +26,22 @@ export default function TabTwoScreen() {
             <ThemedText type="defaultSemiBold">Volleyball</ThemedText>
         </Animated.View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log('Grocery Shopping button pressed')}>
+      <TouchableOpacity onPress={() => router.push("/navigation/grocery-shopping")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Grocery Shopping</ThemedText>
         </Animated.View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log('Exploring button pressed')}>
+      <TouchableOpacity onPress={() => router.push("/navigation/exploring")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Exploring</ThemedText>
         </Animated.View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log('Food button pressed')}>
+      <TouchableOpacity onPress={() => router.push("/navigation/food")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Food</ThemedText>
         </Animated.View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log('Studying button pressed')}>
+      <TouchableOpacity onPress={() => router.push("/navigation/studying")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Studying</ThemedText>
         </Animated.View>
