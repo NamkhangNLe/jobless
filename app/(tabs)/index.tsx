@@ -15,7 +15,7 @@ export default function HomeScreen() {
           style={styles.friendsLogo}
         />
       }>
-      <ThemedView style={styles.titleContainer}>
+      <ThemedView style={styles.stepContainer}>
         <ThemedText type="title">Welcome to Jobless!</ThemedText>
         <HelloWave />
       </ThemedView>

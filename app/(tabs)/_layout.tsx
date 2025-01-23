@@ -43,8 +43,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="navigation/[activity]"
         options={{
-          tabBarIcon: () => null,
-          tabBarLabel: () => null,
+          href: null,
         }}
       />
     </Tabs>
