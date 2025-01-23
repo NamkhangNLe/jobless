@@ -15,13 +15,13 @@ export default function HomeScreen() {
           style={styles.friendsLogo}
         />
       }>
-      <ThemedView style={styles.stepContainer}>
+      <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome to Jobless!</ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">0 Jobs?</ThemedText>
-        <ThemedText style={{ textAlign: 'justify' }}>
+        <ThemedText>
           Last semester I met one of my closest friends Pau and the issue we had was running out of people to do side quests with.
         </ThemedText>
       </ThemedView>
