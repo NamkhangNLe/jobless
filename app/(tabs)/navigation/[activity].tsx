@@ -1,56 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
-import MapView, { Polyline } from 'react-native-maps';
-import * as Location from 'expo-location';
+import React from 'react';
+import { router, useLocalSearchParams } from 'expo-router';
+import { View, StyleSheet, TextInput, TouchableOpacity, Animated, Button } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 
 const Activity = () => {
-    const [location, setLocation] = useState(null);
-    const [route, setRoute] = useState([]);
+    const { activity } = useLocalSearchParams();
+    const [destination, setDestination] = React.useState('');
 
-    useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                console.error('Permission to access location was denied');
-                return;
-            }
+    const handleInputChange = (input: string) => {
+        setDestination(input);
+    }
 
-            let location = await Location.getCurrentPositionAsync({});
-            setLocation(location.coords);
-        })();
-    }, []);
+    const handlePress = () => {
+        router.push('/quest/', { destination });
+    };
 
     return (
-        <View style={{ flex: 1 }}>
-            {location && (
-                <MapView
-                    style={styles.map}
-                    initialRegion={{
-                        latitude: location.latitude,
-                        longitude: location.longitude,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}
-                    showsUserLocation={true}
-                >
-                    {route.length > 0 && <Polyline coordinates={route} />}
-                </MapView>
-            )}
+        <View style={styles.container}>
+            <ThemedView style={styles.titleContainer}>
+                <ThemedText type="title">{activity} Quest</ThemedText>
+            </ThemedView>
+            <TextInput
+                style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                onChangeText={handleInputChange}
+                value={destination}
+                placeholder="Enter your destination"
+            />
+            <Button title="Vamanos!" onPress={handlePress} />
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
-    map: {
+    container: {
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    input: {
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        margin: 10,
+    titleContainer: {
+        marginBottom: 20,
+    },
+    animatedButton: {
+        backgroundColor: '#FF6347',
         padding: 10,
-    },
+        borderRadius: 5,
+        alignItems: 'center',
+      },
 });
 
 export default Activity;

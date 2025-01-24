@@ -21,27 +21,27 @@ export default function TabTwoScreen() {
         <ThemedText type="title">Profile</ThemedText>
       </ThemedView>
       <ThemedText>A list of what activities you have subscribed to and people have subsribed to you for.</ThemedText>
-      <TouchableOpacity onPress={() => router.push("/navigation/volleyball")}>
+      <TouchableOpacity onPress={() => router.push("/navigation/Volleyball")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Volleyball</ThemedText>
         </Animated.View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push("/navigation/grocery-shopping")}>
+      <TouchableOpacity onPress={() => router.push("/navigation/Grocery Shopping")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Grocery Shopping</ThemedText>
         </Animated.View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push("/navigation/exploring")}>
+      <TouchableOpacity onPress={() => router.push("/navigation/Exploring")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Exploring</ThemedText>
         </Animated.View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push("/navigation/food")}>
+      <TouchableOpacity onPress={() => router.push("/navigation/Food")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Food</ThemedText>
         </Animated.View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push("/navigation/studying")}>
+      <TouchableOpacity onPress={() => router.push("/navigation/Studying")}>
         <Animated.View style={styles.animatedButton}>
             <ThemedText type="defaultSemiBold">Studying</ThemedText>
         </Animated.View>
