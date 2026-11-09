@@ -1,4 +1,4 @@
-import { Text, type TextProps, StyleSheet } from 'react-native';
+import { Platform, Text, type TextProps, StyleSheet } from 'react-native';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
@@ -63,10 +63,15 @@ const styles = StyleSheet.create({
     color: '#FF4D2E',
   },
   // Small mono label for dates / meta — editorial, intentional.
+  // Web gets a real monospace fallback stack so the voice survives even if
+  // the SpaceMono file fails to load; native falls back to the system font.
   caption: {
     fontSize: 12,
     lineHeight: 16,
-    fontFamily: 'SpaceMono',
+    fontFamily: Platform.select({
+      web: 'SpaceMono, ui-monospace, SFMono-Regular, Menlo, monospace',
+      default: 'SpaceMono',
+    }),
     letterSpacing: 0.4,
   },
 });

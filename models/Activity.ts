@@ -46,10 +46,16 @@ export interface Activity {
   createdByMe?: boolean;
 }
 
-export function spotsLeft(activity: Activity): number {
-  return Math.max(0, activity.spotsTotal - activity.attendees.length);
+/**
+ * Spots left in the quest's listed crew, counting the viewer when joined.
+ * The seed attendees are a listed crew, not live RSVPs — callers must label
+ * the number as crew. `joined` defaults to false for callers that do not
+ * know the viewer's join state.
+ */
+export function spotsLeft(activity: Activity, joined = false): number {
+  return Math.max(0, activity.spotsTotal - activity.attendees.length - (joined ? 1 : 0));
 }
 
-export function isFull(activity: Activity): boolean {
-  return spotsLeft(activity) <= 0;
+export function isFull(activity: Activity, joined = false): boolean {
+  return spotsLeft(activity, joined) <= 0;
 }

@@ -21,7 +21,7 @@ export default function ProfileScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <View style={styles.avatar}>
-            <ThemedText style={styles.avatarText}>YO</ThemedText>
+            <ThemedText style={styles.avatarText}>YU</ThemedText>
           </View>
           <ThemedText type="title">You</ThemedText>
           <ThemedText style={styles.sub}>

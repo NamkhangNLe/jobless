@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { useSurfaceColor } from '@/hooks/useThemeColor';
 import { formatDate } from '@/lib/store';
+import { avatarColorFor } from '@/lib/activityUtils';
 import { isFull, spotsLeft, type Activity } from '@/models/Activity';
 
 /** Muted, cohesive category colors — distinct enough to scan, never garish. */
@@ -44,10 +45,13 @@ export function ActivityCard({
   onPress: () => void;
 }) {
   const surface = useSurfaceColor();
-  const full = isFull(activity);
-  const left = spotsLeft(activity);
+  // Joining consumes a spot: the count and the "Full" state must reflect it.
+  const full = isFull(activity, joined);
+  const left = spotsLeft(activity, joined);
   const going = activity.attendees.length + (joined ? 1 : 0);
-  const hostColor = CATEGORY_COLORS[activity.category];
+  // Avatars are colored per person (hashed from name), not per category —
+  // the crew reads as people, not as color-coded topics.
+  const hostColor = avatarColorFor(activity.host.name);
 
   return (
     <Pressable
@@ -76,7 +80,7 @@ export function ActivityCard({
                 {activity.place}
               </ThemedText>
               <ThemedText style={styles.hostName} numberOfLines={1}>
-                Hosted by {activity.host.name} · {going}/{activity.spotsTotal} going
+                Hosted by {activity.host.name} · {going}/{activity.spotsTotal} in the crew
               </ThemedText>
             </View>
           </View>

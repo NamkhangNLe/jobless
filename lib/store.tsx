@@ -10,6 +10,8 @@ import React, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import type { Activity } from '@/models/Activity';
+import { isFull } from '@/models/Activity';
+import { activityTimestamp, formatDateSafe } from '@/lib/activityUtils';
 import { getSeedActivities } from '@/data/seedActivities';
 
 const CREATED_KEY = '@jobless/created-activities-v1';
@@ -37,6 +39,8 @@ interface ActivitiesContextValue {
   join: (id: string) => void;
   leave: (id: string) => void;
   createActivity: (input: NewActivityInput) => Activity;
+  /** Delete a quest created by the current user. No-op for anything else. */
+  deleteActivity: (id: string) => void;
 }
 
 const ActivitiesContext = createContext<ActivitiesContextValue | null>(null);
@@ -80,20 +84,36 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
     const byId = new Map<string, Activity>();
     seed.forEach((a) => byId.set(a.id, a));
     created.forEach((a) => byId.set(a.id, a));
-    return [...byId.values()].sort((a, b) => {
-      const da = `${a.date} ${a.time}`;
-      const db = `${b.date} ${b.time}`;
-      return da.localeCompare(db);
-    });
+    // Sort by real parsed datetime. The old string sort on
+    // `${date} ${time}` put "6:30 PM" before "9:00 AM" on the same day.
+    return [...byId.values()].sort((a, b) => activityTimestamp(a) - activityTimestamp(b));
   }, [created]);
 
   const isJoined = useCallback((id: string) => joinedIds.includes(id), [joinedIds]);
 
-  const join = useCallback((id: string) => {
-    setJoinedIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
-  }, []);
+  const join = useCallback(
+    (id: string) => {
+      setJoinedIds((prev) => {
+        if (prev.includes(id)) return prev;
+        // A full quest cannot be joined: joining consumes a spot, so check
+        // capacity without counting the viewer yet.
+        const target = activities.find((a) => a.id === id);
+        if (target && isFull(target, false)) return prev;
+        return [...prev, id];
+      });
+    },
+    [activities],
+  );
 
   const leave = useCallback((id: string) => {
+    setJoinedIds((prev) => prev.filter((x) => x !== id));
+  }, []);
+
+  const deleteActivity = useCallback((id: string) => {
+    setCreated((prev) => {
+      if (!prev.some((a) => a.id === id)) return prev;
+      return prev.filter((a) => a.id !== id);
+    });
     setJoinedIds((prev) => prev.filter((x) => x !== id));
   }, []);
 
@@ -101,7 +121,7 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
     const activity: Activity = {
       ...input,
       id: `user-${Date.now()}`,
-      host: { name: YOU, initials: 'YO' },
+      host: { name: YOU, initials: 'YU' },
       attendees: [],
       createdByMe: true,
     };
@@ -111,8 +131,17 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<ActivitiesContextValue>(
-    () => ({ activities, joinedIds, loaded, isJoined, join, leave, createActivity }),
-    [activities, joinedIds, loaded, isJoined, join, leave, createActivity],
+    () => ({
+      activities,
+      joinedIds,
+      loaded,
+      isJoined,
+      join,
+      leave,
+      createActivity,
+      deleteActivity,
+    }),
+    [activities, joinedIds, loaded, isJoined, join, leave, createActivity, deleteActivity],
   );
 
   return <ActivitiesContext.Provider value={value}>{children}</ActivitiesContext.Provider>;
@@ -124,8 +153,7 @@ export function useActivities(): ActivitiesContextValue {
   return ctx;
 }
 
-/** Human-friendly date, e.g. "Sat, Nov 14". */
+/** Human-friendly date, e.g. "Sat, Nov 14". Never renders "Invalid Date". */
 export function formatDate(iso: string): string {
-  const d = new Date(`${iso}T12:00:00`);
-  return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  return formatDateSafe(iso);
 }

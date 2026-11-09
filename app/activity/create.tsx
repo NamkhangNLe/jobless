@@ -2,10 +2,13 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 
+import { LocationPicker } from '@/components/LocationPicker';
+import { QuestDateTimePicker } from '@/components/QuestDateTimePicker';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useSurfaceColor } from '@/hooks/useThemeColor';
 import { useActivities, type NewActivityInput } from '@/lib/store';
+import { isValidIsoDate, isValidTime12h, parseActivityDateTime } from '@/lib/activityUtils';
 import { CATEGORIES, type ActivityCategory } from '@/models/Activity';
 
 const SPOTS: Record<string, { lat: number; lng: number }> = {
@@ -37,6 +40,10 @@ export default function CreateActivityScreen() {
   const [time, setTime] = useState('6:30 PM');
   const [place, setPlace] = useState('');
   const [neighborhood, setNeighborhood] = useState('Williamsburg');
+  // The pin starts at the neighborhood's center; tapping the map moves it
+  // to the exact meeting spot. Coordinates are never fabricated from the
+  // neighborhood name alone.
+  const [coords, setCoords] = useState(SPOTS['Williamsburg']);
   const [spots, setSpots] = useState('8');
   const [tags, setTags] = useState('');
   const [error, setError] = useState('');
@@ -44,6 +51,19 @@ export default function CreateActivityScreen() {
   const handleCreate = () => {
     if (!title.trim()) {
       setError('Give your quest a title.');
+      return;
+    }
+    if (!isValidIsoDate(date)) {
+      setError('Pick a real date, YYYY-MM-DD.');
+      return;
+    }
+    if (!isValidTime12h(time)) {
+      setError('Pick a time like 6:30 PM.');
+      return;
+    }
+    const when = parseActivityDateTime(date, time.trim());
+    if (!when || when.getTime() < Date.now() - 60 * 1000) {
+      setError('That time is in the past. Pick a future date and time.');
       return;
     }
     if (!place.trim()) {
@@ -55,13 +75,12 @@ export default function CreateActivityScreen() {
       setError('Spots should be a number, at least 2.');
       return;
     }
-    const coords = SPOTS[neighborhood] ?? SPOTS['Williamsburg'];
     const input: NewActivityInput = {
       title: title.trim(),
       category,
       description: description.trim() || 'Come hang out. Details to follow.',
       date,
-      time: time.trim() || '6:30 PM',
+      time: time.trim(),
       place: place.trim(),
       neighborhood,
       latitude: coords.lat,
@@ -81,7 +100,8 @@ export default function CreateActivityScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <ThemedText type="title">Start a quest</ThemedText>
         <ThemedText style={styles.sub}>
-          Post an activity and people who are down will join. Keep it simple.
+          Post a quest to your board. It lives on this device for now — sharing it
+          with real people needs accounts, coming next.
         </ThemedText>
 
         <ThemedText style={styles.label}>Title</ThemedText>
@@ -118,28 +138,12 @@ export default function CreateActivityScreen() {
           numberOfLines={3}
         />
 
-        <View style={styles.row}>
-          <View style={styles.half}>
-            <ThemedText style={styles.label}>Date</ThemedText>
-            <TextInput
-              style={styles.input}
-              value={date}
-              onChangeText={setDate}
-              placeholder="YYYY-MM-DD"
-              placeholderTextColor="#999"
-            />
-          </View>
-          <View style={styles.half}>
-            <ThemedText style={styles.label}>Time</ThemedText>
-            <TextInput
-              style={styles.input}
-              value={time}
-              onChangeText={setTime}
-              placeholder="6:30 PM"
-              placeholderTextColor="#999"
-            />
-          </View>
-        </View>
+        <QuestDateTimePicker
+          date={date}
+          time={time}
+          onDateChange={setDate}
+          onTimeChange={setTime}
+        />
 
         <ThemedText style={styles.label}>Place</ThemedText>
         <TextInput
@@ -155,7 +159,10 @@ export default function CreateActivityScreen() {
           {Object.keys(SPOTS).map((n) => (
             <Pressable
               key={n}
-              onPress={() => setNeighborhood(n)}
+              onPress={() => {
+                setNeighborhood(n);
+                setCoords(SPOTS[n]);
+              }}
               style={[styles.chip, { backgroundColor: surface }, neighborhood === n && styles.chipActive]}>
               <ThemedText style={[styles.chipText, neighborhood === n && styles.chipTextActive]}>
                 {n}
@@ -163,6 +170,13 @@ export default function CreateActivityScreen() {
             </Pressable>
           ))}
         </View>
+
+        <ThemedText style={styles.label}>Exact spot</ThemedText>
+        <LocationPicker
+          latitude={coords.lat}
+          longitude={coords.lng}
+          onChange={(latitude, longitude) => setCoords({ lat: latitude, lng: longitude })}
+        />
 
         <View style={styles.row}>
           <View style={styles.half}>

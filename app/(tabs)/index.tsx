@@ -3,6 +3,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 
 import { ActivityCard } from '@/components/ActivityCard';
+import QuestMap from '@/components/QuestMap';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useSurfaceColor } from '@/hooks/useThemeColor';
@@ -13,6 +14,7 @@ export default function HomeScreen() {
   const { activities, joinedIds, isJoined } = useActivities();
   const [filter, setFilter] = useState<ActivityCategory | 'All'>('All');
   const surface = useSurfaceColor();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const upcoming = useMemo(
     () => activities.filter((a) => joinedIds.includes(a.id)),
@@ -23,6 +25,9 @@ export default function HomeScreen() {
     () => (filter === 'All' ? activities : activities.filter((a) => a.category === filter)),
     [activities, filter],
   );
+
+  const openActivity = (id: string) =>
+    router.push({ pathname: '/navigation/[activity]', params: { activity: id } });
 
   return (
     <ThemedView style={styles.container}>
@@ -37,6 +42,26 @@ export default function HomeScreen() {
           onPress={() => router.push('/activity/create')}>
           <ThemedText style={styles.createButtonText}>+ Start a new quest</ThemedText>
         </Pressable>
+
+        {/* Hero: the board on a real map. List-first stays the identity —
+            this strip is the visual, not the navigation. Tap a pin to open it. */}
+        <View style={styles.heroMap}>
+          <QuestMap
+            activities={activities}
+            selectedId={selectedId}
+            preview
+            onSelect={(id) => {
+              setSelectedId(id);
+              openActivity(id);
+            }}
+            joinedIds={joinedIds}
+          />
+          <View style={styles.heroMapLabel} pointerEvents="none">
+            <ThemedText style={styles.heroMapLabelText}>
+              {activities.length} quests on the map · tap a pin
+            </ThemedText>
+          </View>
+        </View>
 
         {upcoming.length > 0 && (
           <View style={styles.section}>
@@ -82,6 +107,11 @@ export default function HomeScreen() {
             <ThemedText style={styles.empty}>Nothing in this category yet. Start one!</ThemedText>
           )}
         </View>
+
+        <ThemedText style={styles.footnote}>
+          Sample board for now — quests and crews are listed examples. Joins are
+          saved on this device only until accounts arrive.
+        </ThemedText>
       </ScrollView>
     </ThemedView>
   );
@@ -149,5 +179,37 @@ const styles = StyleSheet.create({
   empty: {
     opacity: 0.7,
     marginTop: 8,
+  },
+  heroMap: {
+    height: 190,
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginBottom: 20,
+    position: 'relative',
+    shadowColor: '#000',
+    shadowOpacity: 0.07,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 3,
+  },
+  heroMapLabel: {
+    position: 'absolute',
+    bottom: 10,
+    left: 12,
+    backgroundColor: 'rgba(0,0,0,0.65)',
+    borderRadius: 999,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  heroMapLabelText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  footnote: {
+    fontSize: 13,
+    lineHeight: 19,
+    opacity: 0.55,
+    marginTop: 24,
   },
 });

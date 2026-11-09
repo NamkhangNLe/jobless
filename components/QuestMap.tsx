@@ -1,6 +1,7 @@
 import MapView, { Marker } from 'react-native-maps';
 
 import type { Activity } from '@/models/Activity';
+import { pinOffsetFor } from '@/lib/activityUtils';
 
 export interface QuestMapProps {
   activities: Activity[];
@@ -9,6 +10,8 @@ export interface QuestMapProps {
   center?: { latitude: number; longitude: number };
   showUserLocation?: boolean;
   joinedIds?: string[];
+  /** Preview strip (e.g. the Home hero): fits pins but disables pan/zoom. */
+  preview?: boolean;
 }
 
 const DEFAULT_CENTER = { latitude: 40.7484, longitude: -73.9775 };
@@ -36,18 +39,23 @@ export default function QuestMap({
         longitudeDelta: 0.12,
       }}
       showsUserLocation={showUserLocation}>
-      {activities.map((a) => (
-        <Marker
-          key={a.id}
-          coordinate={{ latitude: a.latitude, longitude: a.longitude }}
-          title={a.title}
-          description={`${a.place} · ${a.time}`}
-          pinColor={
-            selectedId === a.id || joinedIds?.includes(a.id) ? '#FF4D2E' : '#8E8E93'
-          }
-          onPress={() => onSelect(a.id)}
-        />
-      ))}
+      {activities.map((a) => {
+        // Deterministic per-activity jitter so two quests at the exact same
+        // coordinate never stack invisibly on top of each other.
+        const { dLat, dLng } = pinOffsetFor(a.id);
+        return (
+          <Marker
+            key={a.id}
+            coordinate={{ latitude: a.latitude + dLat, longitude: a.longitude + dLng }}
+            title={a.title}
+            description={`${a.place} · ${a.time}`}
+            pinColor={
+              selectedId === a.id || joinedIds?.includes(a.id) ? '#FF4D2E' : '#8E8E93'
+            }
+            onPress={() => onSelect(a.id)}
+          />
+        );
+      })}
     </MapView>
   );
 }

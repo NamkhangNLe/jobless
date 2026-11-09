@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 
 import { CategoryChip } from '@/components/ActivityCard';
@@ -6,11 +6,12 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useSurfaceColor } from '@/hooks/useThemeColor';
 import { formatDate, useActivities } from '@/lib/store';
+import { avatarColorFor } from '@/lib/activityUtils';
 import { isFull, spotsLeft } from '@/models/Activity';
 
 export default function ActivityDetailScreen() {
   const { activity: id } = useLocalSearchParams<{ activity: string }>();
-  const { activities, isJoined, join, leave } = useActivities();
+  const { activities, isJoined, join, leave, deleteActivity } = useActivities();
   const surface = useSurfaceColor();
 
   const activity = activities.find((a) => a.id === id);
@@ -28,9 +29,23 @@ export default function ActivityDetailScreen() {
   }
 
   const joined = isJoined(activity.id);
-  const full = isFull(activity);
-  const left = spotsLeft(activity);
+  const full = isFull(activity, joined);
+  const left = spotsLeft(activity, joined);
   const going = [...activity.attendees, ...(joined ? ['You'] : [])];
+
+  const handleDelete = () => {
+    Alert.alert('Delete this quest?', `"${activity.title}" will be removed from your board.`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => {
+          deleteActivity(activity.id);
+          router.back();
+        },
+      },
+    ]);
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -72,7 +87,7 @@ export default function ActivityDetailScreen() {
         <View style={[styles.spotsCard, { backgroundColor: surface }]}>
           <View style={styles.spotsHeader}>
             <ThemedText type="subtitle">
-              {activity.attendees.length + (joined ? 1 : 0)}/{activity.spotsTotal} going
+              {activity.attendees.length + (joined ? 1 : 0)}/{activity.spotsTotal} in the crew
             </ThemedText>
             <ThemedText style={styles.spotsNote}>
               {joined
@@ -94,15 +109,19 @@ export default function ActivityDetailScreen() {
               ]}
             />
           </View>
+          <ThemedText style={styles.crewNote}>
+            Listed crew is a sample for now. Your join is saved on this device only —
+            nobody else can see it until accounts arrive.
+          </ThemedText>
         </View>
 
-        <ThemedText type="subtitle">Who&apos;s going</ThemedText>
+        <ThemedText type="subtitle">Who&apos;s in the crew</ThemedText>
         {going.length === 0 ? (
           <ThemedText style={styles.sub}>Nobody yet. Be the first.</ThemedText>
         ) : (
           going.map((name) => (
             <View key={name} style={styles.personRow}>
-              <View style={styles.personAvatar}>
+              <View style={[styles.personAvatar, { backgroundColor: avatarColorFor(name) }]}>
                 <ThemedText style={styles.personInitials}>
                   {name.slice(0, 2).toUpperCase()}
                 </ThemedText>
@@ -140,6 +159,12 @@ export default function ActivityDetailScreen() {
         <Pressable style={[styles.backButton, { backgroundColor: surface }]} onPress={() => router.back()}>
           <ThemedText style={styles.backButtonText}>Back to quests</ThemedText>
         </Pressable>
+
+        {activity.createdByMe && (
+          <Pressable style={styles.deleteButton} onPress={handleDelete}>
+            <ThemedText style={styles.deleteButtonText}>Delete this quest</ThemedText>
+          </Pressable>
+        )}
       </ScrollView>
     </ThemedView>
   );
@@ -301,5 +326,24 @@ const styles = StyleSheet.create({
   backButtonText: {
     fontWeight: '600',
     fontSize: 15,
+  },
+  crewNote: {
+    fontSize: 13,
+    lineHeight: 18,
+    opacity: 0.6,
+    marginTop: 12,
+  },
+  deleteButton: {
+    borderWidth: 1,
+    borderColor: '#E8B4AC',
+    borderRadius: 14,
+    paddingVertical: 13,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  deleteButtonText: {
+    fontWeight: '600',
+    fontSize: 15,
+    color: '#b3271e',
   },
 });
