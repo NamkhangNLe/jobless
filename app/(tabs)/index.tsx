@@ -1,63 +1,153 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { router } from 'expo-router';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { ActivityCard } from '@/components/ActivityCard';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useSurfaceColor } from '@/hooks/useThemeColor';
+import { useActivities } from '@/lib/store';
+import { CATEGORIES, type ActivityCategory } from '@/models/Activity';
 
 export default function HomeScreen() {
+  const { activities, joinedIds, isJoined } = useActivities();
+  const [filter, setFilter] = useState<ActivityCategory | 'All'>('All');
+  const surface = useSurfaceColor();
+
+  const upcoming = useMemo(
+    () => activities.filter((a) => joinedIds.includes(a.id)),
+    [activities, joinedIds],
+  );
+
+  const visible = useMemo(
+    () => (filter === 'All' ? activities : activities.filter((a) => a.category === filter)),
+    [activities, filter],
+  );
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/friends.png')}
-          style={styles.friendsLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome to Jobless!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">0 Jobs?</ThemedText>
-        <ThemedText>
-          Last semester I met one of my closest friends Pau and the issue we had was running out of people to do side quests with.
+    <ThemedView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        <ThemedText type="title">Find your people</ThemedText>
+        <ThemedText style={styles.subtitle}>
+          Side quests, pickup games, and people to do them with. No job required.
         </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">1 Stop Shop</ThemedText>
-        <ThemedText>
-          Jobless solves these problems by connecting you with like-minded individuals who are also looking for side quests. 
-          Whether you're looking for a study buddy, a workout partner, or someone to collaborate with on a project, 
-          Jobless has got you covered.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">2 Learn More</ThemedText>
-        <ThemedText>
-          When you're ready, click Explore to get your life started.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+
+        <Pressable
+          style={({ pressed }) => [styles.createButton, pressed && { opacity: 0.88 }]}
+          onPress={() => router.push('/activity/create')}>
+          <ThemedText style={styles.createButtonText}>+ Start a new quest</ThemedText>
+        </Pressable>
+
+        {upcoming.length > 0 && (
+          <View style={styles.section}>
+            <ThemedText type="subtitle">Up next for you</ThemedText>
+            {upcoming.map((a) => (
+              <ActivityCard
+                key={a.id}
+                activity={a}
+                joined
+                onPress={() =>
+                  router.push({ pathname: '/navigation/[activity]', params: { activity: a.id } })
+                }
+              />
+            ))}
+          </View>
+        )}
+
+        <View style={styles.section}>
+          <ThemedText type="subtitle">All quests</ThemedText>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chips}>
+            {(['All', ...CATEGORIES] as const).map((c) => (
+              <Pressable
+                key={c}
+                onPress={() => setFilter(c)}
+                style={[styles.chip, { backgroundColor: surface }, filter === c && styles.chipActive]}>
+                <ThemedText style={[styles.chipText, filter === c && styles.chipTextActive]}>
+                  {c}
+                </ThemedText>
+              </Pressable>
+            ))}
+          </ScrollView>
+          {visible.map((a) => (
+            <ActivityCard
+              key={a.id}
+              activity={a}
+              joined={isJoined(a.id)}
+              onPress={() =>
+                router.push({ pathname: '/navigation/[activity]', params: { activity: a.id } })
+              }
+            />
+          ))}
+          {visible.length === 0 && (
+            <ThemedText style={styles.empty}>Nothing in this category yet. Start one!</ThemedText>
+          )}
+        </View>
+      </ScrollView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flex: 1,
+  },
+  scroll: {
+    padding: 20,
+    paddingTop: 64,
+    paddingBottom: 120,
+  },
+  subtitle: {
+    marginTop: 6,
+    marginBottom: 16,
+    opacity: 0.8,
+  },
+  createButton: {
+    backgroundColor: '#FF4D2E',
+    borderRadius: 14,
+    paddingVertical: 15,
     alignItems: 'center',
-    gap: 8,
+    marginBottom: 24,
+    shadowColor: '#FF4D2E',
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 4,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  createButtonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 16,
+    letterSpacing: -0.2,
   },
-  friendsLogo: {
-    height: '100%',
-    width: '100%',
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  section: {
+    marginTop: 8,
+    gap: 14,
+  },
+  chips: {
+    flexDirection: 'row',
+    marginVertical: 4,
+  },
+  chip: {
+    borderWidth: 1,
+    borderColor: '#D9D9D9',
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    marginRight: 8,
+  },
+  chipActive: {
+    backgroundColor: '#191919',
+    borderColor: '#191919',
+  },
+  chipText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  chipTextActive: {
+    color: '#fff',
+  },
+  empty: {
+    opacity: 0.7,
+    marginTop: 8,
   },
 });

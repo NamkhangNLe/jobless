@@ -1,77 +1,145 @@
-import { TouchableOpacity, StyleSheet, Image, Platform, Animated } from 'react-native';
-import { Link, router } from "expo-router";
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { useMemo, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { router } from 'expo-router';
+
+import { ActivityCard } from '@/components/ActivityCard';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+import { useSurfaceColor } from '@/hooks/useThemeColor';
+import { useActivities } from '@/lib/store';
+import { CATEGORIES, type ActivityCategory } from '@/models/Activity';
 
-export default function TabTwoScreen() {
+export default function ExploreScreen() {
+  const { activities, isJoined } = useActivities();
+  const [query, setQuery] = useState('');
+  const [category, setCategory] = useState<ActivityCategory | 'All'>('All');
+  const surface = useSurfaceColor();
+
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return activities.filter((a) => {
+      if (category !== 'All' && a.category !== category) return false;
+      if (!q) return true;
+      const haystack = [a.title, a.description, a.place, a.neighborhood, a.host.name, ...a.tags]
+        .join(' ')
+        .toLowerCase();
+      return q.split(/\s+/).every((word) => haystack.includes(word));
+    });
+  }, [activities, query, category]);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/friends.png')}
-          style={styles.friendsLogo}
-          />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Profile</ThemedText>
-      </ThemedView>
-      <ThemedText>A list of what activities you have subscribed to and people have subsribed to you for.</ThemedText>
-      <TouchableOpacity onPress={() => router.push("/navigation/Volleyball")}>
-        <Animated.View style={styles.animatedButton}>
-            <ThemedText type="defaultSemiBold">Volleyball</ThemedText>
-        </Animated.View>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push("/navigation/Grocery Shopping")}>
-        <Animated.View style={styles.animatedButton}>
-            <ThemedText type="defaultSemiBold">Grocery Shopping</ThemedText>
-        </Animated.View>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push("/navigation/Exploring")}>
-        <Animated.View style={styles.animatedButton}>
-            <ThemedText type="defaultSemiBold">Exploring</ThemedText>
-        </Animated.View>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push("/navigation/Food")}>
-        <Animated.View style={styles.animatedButton}>
-            <ThemedText type="defaultSemiBold">Food</ThemedText>
-        </Animated.View>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push("/navigation/Studying")}>
-        <Animated.View style={styles.animatedButton}>
-            <ThemedText type="defaultSemiBold">Studying</ThemedText>
-        </Animated.View>
-      </TouchableOpacity>
-    </ParallaxScrollView>
+    <ThemedView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        <ThemedText type="title">Explore</ThemedText>
+        <ThemedText style={styles.subtitle}>
+          Search quests by name, place, host, or vibe.
+        </ThemedText>
+
+        <TextInput
+          style={styles.search}
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Search volleyball, coffee, hiking…"
+          placeholderTextColor="#999"
+          returnKeyType="search"
+        />
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chips}>
+          {(['All', ...CATEGORIES] as const).map((c) => (
+            <Pressable
+              key={c}
+              onPress={() => setCategory(c)}
+              style={[styles.chip, { backgroundColor: surface }, category === c && styles.chipActive]}>
+              <ThemedText style={[styles.chipText, category === c && styles.chipTextActive]}>
+                {c}
+              </ThemedText>
+            </Pressable>
+          ))}
+        </ScrollView>
+
+        <View style={styles.results}>
+          <ThemedText style={styles.count}>
+            {results.length} quest{results.length === 1 ? '' : 's'}
+          </ThemedText>
+          {results.map((a) => (
+            <ActivityCard
+              key={a.id}
+              activity={a}
+              joined={isJoined(a.id)}
+              onPress={() =>
+                router.push({ pathname: '/navigation/[activity]', params: { activity: a.id } })
+              }
+            />
+          ))}
+          {results.length === 0 && (
+            <ThemedText style={styles.empty}>
+              No quests match that. Try a different search, or start the quest yourself.
+            </ThemedText>
+          )}
+        </View>
+      </ScrollView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flex: 1,
   },
-  titleContainer: {
+  scroll: {
+    padding: 20,
+    paddingTop: 64,
+    paddingBottom: 120,
+  },
+  subtitle: {
+    marginTop: 6,
+    marginBottom: 16,
+    opacity: 0.8,
+  },
+  search: {
+    backgroundColor: '#F2F2F7',
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 13,
+    fontSize: 16,
+    marginBottom: 14,
+  },
+  chips: {
     flexDirection: 'row',
-    gap: 8,
+    marginBottom: 8,
   },
-  animatedButton: {
-    backgroundColor: '#FF6347',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
+  chip: {
+    borderWidth: 1,
+    borderColor: '#D9D9D9',
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    marginRight: 8,
   },
-  friendsLogo: {
-    height: '100%',
-    width: '100%',
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  chipActive: {
+    backgroundColor: '#191919',
+    borderColor: '#191919',
+  },
+  chipText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  chipTextActive: {
+    color: '#fff',
+  },
+  results: {
+    gap: 12,
+    marginTop: 8,
+  },
+  count: {
+    fontSize: 13,
+    fontWeight: '700',
+    opacity: 0.6,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  empty: {
+    opacity: 0.7,
+    marginTop: 8,
   },
 });

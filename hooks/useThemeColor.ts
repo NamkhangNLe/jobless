@@ -19,3 +19,8 @@ export function useThemeColor(
     return Colors[theme][colorName];
   }
 }
+
+/** Card / chip surface color that adapts to light and dark mode. */
+export function useSurfaceColor(): string {
+  return useThemeColor({}, 'surface');
+}
