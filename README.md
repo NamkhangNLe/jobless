@@ -1,4 +1,4 @@
-# Jobless 👋
+# Jobless
 
 Welcome to Jobless, an app designed to connect you with like-minded individuals for various activities and side quests.
 
@@ -41,11 +41,12 @@ Welcome to Jobless, an app designed to connect you with like-minded individuals 
 
 ## Features
 
-- **Home Screen**: Welcome message and introduction to the app.
-- **Explore Screen**: List of activities you have subscribed to and people who have subscribed to you.
-- **Maps Screen**: Display of activities and subscriptions.
-- **Themed Components**: Custom themed text and view components.
-- **Parallax Scroll View**: Smooth scrolling with parallax effect.
+- **Field-guide design system**: bone-paper light mode, warm-ink dark mode, Space Grotesk display type with Space Mono annotations, sticker cards with hard borders and offset shadows.
+- **Home Screen**: the origin field note, how it works, and the quest chips.
+- **Quest Board**: the activities you have subscribed to and people have subscribed to you for, as tappable quest cards.
+- **Quest Detail**: set a destination for a quest and kick it off.
+- **Quest Confirmation**: summary of the accepted quest.
+- **Themed Components**: custom themed text, view, card and button components.
 
 ## Learn More
 
