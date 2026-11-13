@@ -27,7 +27,7 @@ export default function HomeScreen() {
           </ThemedText>
           <View style={[styles.demoBadge, { borderColor: border }]}>
             <ThemedText type="kicker" style={{ color: muted }}>
-              Demo build · local data only
+              Demo build · fictional hosts / local data
             </ThemedText>
           </View>
         </View>
@@ -61,7 +61,7 @@ export default function HomeScreen() {
           <Step
             index="02"
             title="Pick a quest, go"
-            body="When you're ready, open the board and get your life started."
+            body="When you're ready, try the people and place board. No real hosts are contacted."
           />
         </View>
 
@@ -85,9 +85,9 @@ export default function HomeScreen() {
         </View>
 
         <QuestButton
-          label="Open the quest board"
+          label="Find side-quest people"
           backgroundColor={signal}
-          onPress={() => router.push('/explore')}
+          onPress={() => router.push('/club')}
         />
       </ScrollView>
     </ThemedView>
