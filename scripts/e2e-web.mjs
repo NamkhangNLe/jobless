@@ -120,4 +120,4 @@ try {
 } finally {
   await browser.close();
   server.close();
-                                             }
+}
