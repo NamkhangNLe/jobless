@@ -42,7 +42,7 @@ export default function QuestScreen() {
           <ThemedText type="kicker" style={{ color: muted }}>
             {loading ? 'Checking this device' : saved ? 'Quest saved' : 'No saved quest'}
           </ThemedText>
-          <ThemedText type="display">Vamanos!</ThemedText>
+          <ThemedText type="display">{saved ? 'Vamanos!' : 'Your quest'}</ThemedText>
         </View>
 
         <StickerCard tilt={1} style={styles.summary}>
