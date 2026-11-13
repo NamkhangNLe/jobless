@@ -92,6 +92,21 @@ try {
   const boardAfterRemove = await text();
   if (boardAfterRemove.includes('ocean beach')) fail('quest still listed after remove');
 
+  // Negative routes must never claim or create a save.
+  await page.goto('http://localhost:8410/quest', { waitUntil: 'networkidle0' });
+  await page.waitForFunction(() => document.body.innerText.includes('Not saved'));
+  if ((await text()).includes('saved on this device')) fail('direct /quest claims a save');
+  await page.screenshot({ path: '/downloads/revisions/jobless-no-save.png', fullPage: true });
+  await page.goto('http://localhost:8410/quest?id=made-up', { waitUntil: 'networkidle0' });
+  await page.waitForFunction(() => document.body.innerText.includes('Not saved'));
+  await page.goto('http://localhost:8410/navigation/NotAQuest', { waitUntil: 'networkidle0' });
+  await page.waitForFunction(() => document.body.innerText.includes('Quest not found'));
+  const invalid = await text();
+  if (invalid.includes('where to?') || invalid.includes('vamanos!')) fail('unknown quest exposes save UI');
+  const remaining = await page.evaluate(() => window.localStorage.getItem('jobless.savedQuests.v1'));
+  if (remaining !== '[]') fail('negative route mutated saved quests');
+  await page.screenshot({ path: '/downloads/revisions/jobless-unknown-quest.png', fullPage: true });
+
   // Unknown route renders the not-found screen.
   await page.goto('http://localhost:8410/definitely-not-a-route', { waitUntil: 'networkidle0' });
   await new Promise((r) => setTimeout(r, 1500));
@@ -102,4 +117,4 @@ try {
 } finally {
   await browser.close();
   server.close();
-  }
+}
