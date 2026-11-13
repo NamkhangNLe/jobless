@@ -399,7 +399,9 @@ export default function Club() {
                       ? "Your local plans"
                       : "The meeting ground"}
                   </Text>
-                  <Text type="kicker">{visible.length} plans</Text>
+                  <Text type="kicker">
+                    {visible.length} {visible.length === 1 ? "plan" : "plans"}
+                  </Text>
                 </View>
                 <View style={s.wrap}>
                   {["All", ...KINDS].map((k) =>
