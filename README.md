@@ -1,63 +1,50 @@
 # Jobless
 
-Welcome to Jobless, an app designed to connect you with like-minded individuals for various activities and side quests.
+A side-quest social club prototype. The original hook is meeting people through small hosted activities, not managing an existing friend group.
 
-## Get Started
+## Try the current prototype
 
-1. **Install Dependencies**
+```sh
+npm ci
+npx expo start
+```
 
-   ```bash
-   npm install
-   ```
+Home's **Find side-quest people** opens `/club`:
 
-2. **Start the App**
+- Four fictional hosted quests with different hosts, types, times and capacity states.
+- Three imaginary campus places on an interactive schematic board. Markers and named controls filter the same quest list. This is not GPS, a street map or navigation.
+- Filter Play / Make / Wander, open a host's quest, inspect a full quest, join locally, leave, and find the RSVP in My plans after reload.
+- Host a quest with a title, type, sample place, meeting note, newcomer note and 2-12 total spots. Validation runs before storage. A confirmed save opens its detail; My plans can delete it.
+- Fictional hosts, places and occupancy are labeled. No real users, shared attendance, messages, bookings, invitations or notifications. A local RSVP does not contact anyone. Do not travel based on sample plans.
+- Local data uses AsyncStorage (`jobless.club.v1`). Failed writes do not claim success or clear a draft. Unreadable data surfaces a retry state and is not overwritten. Clear site/app data manually to reset a corrupt store if retry cannot read it.
 
-   ```bash
-   npx expo start
-   ```
+The Quests tab retains the original five starter activities and destination-saving flow separately. These are personal ideas, not hosted social quests. Its confirmation reads the actual local saved-record ID; missing/forged IDs and unknown activities do not claim a save.
 
-   In the output, you'll find options to open the app in a:
+## Structure
 
-   - [Development build](https://docs.expo.dev/develop/development-builds/introduction/)
-   - [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-   - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-   - [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- `app/club.tsx`: discovery, place board, detail, local hosting and RSVP views.
+- `lib/club.ts`: fictional fixtures, validation, versioned local storage.
+- `app/(tabs)/`: home and legacy starter-quest board/detail.
+- `app/quest.tsx`, `lib/savedQuests.ts`: starter-save confirmation and storage.
+- `components/`, `constants/`: field-guide theme, paper cards, themed text/buttons.
+- `assets/fonts/`: bundled Space Grotesk and Space Mono with license/provenance.
 
-## Project Structure
+## Checks
 
-- **app/**: Contains the main application code.
-  - **_layout.tsx**: Root layout for the app.
-  - **(tabs)/_layout.tsx**: Layout for the tab navigator.
-  - **(tabs)/index.tsx**: Home screen.
-  - **(tabs)/explore.tsx**: Explore screen.
-  - **(tabs)/navigation/[activity].tsx**: Starter quest detail.
-  - **+not-found.tsx**: Not found screen.
-- **components/**: Reusable UI components.
-- **hooks/**: Custom hooks for the app.
-- **assets/**: Static assets like images and fonts.
-- **constants/**: Constant values used throughout the app.
-- **models/**: TypeScript interfaces for data models.
-- **scripts/**: Utility scripts for project maintenance.
+```sh
+npx tsc --noEmit
+npx jest --runInBand --watchAll=false
+npx expo export --platform web
+node scripts/e2e-club.mjs
+node scripts/e2e-web.mjs
+```
 
-## Features
+The browser scripts use `puppeteer-core` and an installed Chrome. Set `CHROME_PATH` if it is not at `/usr/bin/google-chrome`. They serve the exported output locally on ports 8411 and 8410. Screenshots are written to `test-results/`.
 
-- **Field-guide design system**: bone-paper light mode, warm-ink dark mode, Space Grotesk display type with Space Mono annotations, sticker cards with hard borders and offset shadows.
-- **Home Screen**: the origin field note, how it works, and the quest chips.
-- **Quest Board**: five starter activities and locally saved quests. No subscriptions, social graph or friend notifications are implemented.
-- **Quest Detail**: set a destination for a quest and kick it off.
-- **Quest Confirmation**: summary read from the saved record on this device. A URL alone is not proof of a save.
-- **Themed Components**: custom themed text, view, card and button components.
+`e2e-club` checks type/place filters, selected/full state, local join/leave and reload, empty My plans, host validation/save/reload/delete, blocked writes, corrupt storage without overwrite, mobile/desktop/dark rendering and no page errors/overflow. `e2e-web` checks the retained starter-save flow, persistence/removal and invalid routes. These are Chromium web checks, not native-device or screen-reader certification.
 
-## Learn More
+## Limits and review choices
 
-To learn more about developing your project with Expo, look at the following resources:
+This is an inspectable local product loop, not a working multi-user social service. Real accounts, discovery, geospatial data, shared capacity, moderation, privacy controls and live coordination remain unbuilt. Sample data is not live availability. The schematic intentionally requests no location permission or external map tiles. `react-native-maps`, `expo-location` and unused Expo template components remain; this revision does not claim they were removed. No dependency changes are needed for the new loop.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the Community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+There has been no physical iOS/Android run, Safari/Firefox run, assistive-technology audit, merge or deployment. Upstream dependency audit findings remain unresolved. Review the prototype on its own merits; a visual redesign is not evidence of demand or startup readiness.
