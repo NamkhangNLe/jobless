@@ -30,7 +30,7 @@ Welcome to Jobless, an app designed to connect you with like-minded individuals 
   - **(tabs)/_layout.tsx**: Layout for the tab navigator.
   - **(tabs)/index.tsx**: Home screen.
   - **(tabs)/explore.tsx**: Explore screen.
-  - **(tabs)/maps.tsx**: Maps screen.
+  - **(tabs)/navigation/[activity].tsx**: Starter quest detail.
   - **+not-found.tsx**: Not found screen.
 - **components/**: Reusable UI components.
 - **hooks/**: Custom hooks for the app.
@@ -43,9 +43,9 @@ Welcome to Jobless, an app designed to connect you with like-minded individuals 
 
 - **Field-guide design system**: bone-paper light mode, warm-ink dark mode, Space Grotesk display type with Space Mono annotations, sticker cards with hard borders and offset shadows.
 - **Home Screen**: the origin field note, how it works, and the quest chips.
-- **Quest Board**: the activities you have subscribed to and people have subscribed to you for, as tappable quest cards.
+- **Quest Board**: five starter activities and locally saved quests. No subscriptions, social graph or friend notifications are implemented.
 - **Quest Detail**: set a destination for a quest and kick it off.
-- **Quest Confirmation**: summary of the accepted quest.
+- **Quest Confirmation**: summary read from the saved record on this device. A URL alone is not proof of a save.
 - **Themed Components**: custom themed text, view, card and button components.
 
 ## Learn More
