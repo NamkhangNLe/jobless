@@ -42,10 +42,12 @@ export default function ActivityScreen() {
   };
 
   if (!quest) {
-    return <ThemedView style={[styles.screen, styles.content]}>
+    return <ThemedView style={styles.screen}>
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
       <ThemedText type="display">Quest not found</ThemedText>
       <ThemedText>That activity is not in this build. Nothing was saved.</ThemedText>
       <QuestButton label="Back to the quest board" onPress={() => router.replace('/explore')} />
+      </ScrollView>
     </ThemedView>;
   }
 
