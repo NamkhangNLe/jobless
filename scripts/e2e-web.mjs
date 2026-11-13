@@ -10,7 +10,7 @@
  * Asserting each screen renders its expected content. Exits non-zero on failure.
  */
 import http from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import puppeteer from 'puppeteer-core';
 
@@ -35,6 +35,9 @@ const server = http.createServer(async (req, res) => {
   }
 });
 await new Promise((r) => server.listen(8410, r));
+
+const screenshots = new URL('../test-results/', import.meta.url).pathname;
+await mkdir(screenshots, { recursive: true });
 
 const chrome = process.env.CHROME_PATH || '/usr/bin/google-chrome';
 const browser = await puppeteer.launch({ executablePath: chrome, args: ['--no-sandbox'] });
@@ -96,7 +99,7 @@ try {
   await page.goto('http://localhost:8410/quest', { waitUntil: 'networkidle0' });
   await page.waitForFunction(() => document.body.innerText.includes('Not saved'));
   if ((await text()).includes('saved on this device')) fail('direct /quest claims a save');
-  await page.screenshot({ path: '/downloads/revisions/jobless-no-save.png', fullPage: true });
+  await page.screenshot({ path: join(screenshots, 'no-save.png'), fullPage: true });
   await page.goto('http://localhost:8410/quest?id=made-up', { waitUntil: 'networkidle0' });
   await page.waitForFunction(() => document.body.innerText.includes('Not saved'));
   await page.goto('http://localhost:8410/navigation/NotAQuest', { waitUntil: 'networkidle0' });
@@ -105,7 +108,7 @@ try {
   if (invalid.includes('where to?') || invalid.includes('vamanos!')) fail('unknown quest exposes save UI');
   const remaining = await page.evaluate(() => window.localStorage.getItem('jobless.savedQuests.v1'));
   if (remaining !== '[]') fail('negative route mutated saved quests');
-  await page.screenshot({ path: '/downloads/revisions/jobless-unknown-quest.png', fullPage: true });
+  await page.screenshot({ path: join(screenshots, 'unknown-quest.png'), fullPage: true });
 
   // Unknown route renders the not-found screen.
   await page.goto('http://localhost:8410/definitely-not-a-route', { waitUntil: 'networkidle0' });
@@ -117,4 +120,4 @@ try {
 } finally {
   await browser.close();
   server.close();
-}
+  }
