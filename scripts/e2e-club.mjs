@@ -124,6 +124,9 @@ try {
     );
     await page.screenshot({ path: join(screenshots, name), fullPage: true });
   };
+  await page.goto("http://localhost:8411/", { waitUntil: "networkidle0" });
+  await click("Find side-quest people");
+  await has("Strangers, then");
   await open();
   await page.evaluate(() => localStorage.clear());
   await open();
@@ -140,11 +143,11 @@ try {
   });
   await shot("club-people-mobile.png");
   await click("Filter place North courts");
-  await has("1 plans");
+  await has("1 plan");
   await missing("Make a tiny terrible zine");
   await click("All places");
   await click("Make");
-  await has("1 plans");
+  await has("1 plan");
   await has("Make a tiny terrible zine");
   await click("All");
   await click("Open One more round?");
@@ -165,7 +168,7 @@ try {
   await open();
   await click("My plans");
   await has("Bad at badminton club");
-  await has("1 plans");
+  await has("1 plan");
   await click("Open Bad at badminton club");
   await click("Leave local plan");
   await has("Local RSVP removed.");
