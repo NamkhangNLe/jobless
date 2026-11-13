@@ -23,15 +23,15 @@ export default function ActivityScreen() {
   const card = useThemeColor({}, 'card');
 
   const startQuest = async () => {
-    if (saving) return;
+    if (saving || !quest) return;
     setSaving(true);
     setSaveError(false);
-    const name = quest?.name ?? String(activity ?? '');
+    const name = quest.name;
     try {
-      await saveQuest(name, destination);
+      const saved = await saveQuest(name, destination);
       router.push({
         pathname: '/quest',
-        params: { quest: name, destination },
+        params: { id: saved.id },
       });
     } catch {
       // Storage failed: stay here and say so, rather than claim a save.
@@ -40,6 +40,14 @@ export default function ActivityScreen() {
       setSaving(false);
     }
   };
+
+  if (!quest) {
+    return <ThemedView style={[styles.screen, styles.content]}>
+      <ThemedText type="display">Quest not found</ThemedText>
+      <ThemedText>That activity is not in this build. Nothing was saved.</ThemedText>
+      <QuestButton label="Back to the quest board" onPress={() => router.replace('/explore')} />
+    </ThemedView>;
+  }
 
   return (
     <ThemedView style={styles.screen}>
