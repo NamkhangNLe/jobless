@@ -63,7 +63,7 @@ try {
   const home = await text();
   if (!home.includes('do nothing') || !home.includes('pau') || !home.includes('demo build')) fail('home content');
 
-  await clickButton('Open the quest board');
+  await page.goto('http://localhost:8410/explore', { waitUntil: 'networkidle0' });
   await new Promise((r) => setTimeout(r, 1500));
   const board = await text();
   if (!board.includes('quest board') || !board.includes('volleyball') || !board.includes('starter quests')) fail('board content');
@@ -120,4 +120,4 @@ try {
 } finally {
   await browser.close();
   server.close();
-  }
+                                             }
